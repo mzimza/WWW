@@ -1,0 +1,153 @@
+
+
+{% extends 'mysite/main.html' %}
+
+{% block page %}
+<div class="container">
+
+      <div class="starter-template">
+        <h1>Search engine</h1>
+        <p class="lead">Write your search-phrase here.</p>
+        
+        <form action='search' method="get">
+            <input class='form-control' type="text" name="zapytanie" value="{{zapytanie}}">
+            <input class="btn btn-default btn-lg" role="button" type="submit">
+
+            <div class='row'> &nbsp</div>
+            <div class = "row">
+              Liczba miejsc:
+            </div>
+            <div class="row">
+                <div class="col-md-4"> &nbsp</div>
+                <div class="col-md-1"> od </div>
+                <div class="col-md-1"><input class='form-control' type="text" name="placeMin" value="{{placeMin}}" width="20"></div>
+                <div class="col-md-1"> do </div>
+                <div class="col-md-1">
+                    <input class='form-control' type="text" name="placeMax" value="{{placeMax}}">
+                </div>
+                <div class="col-md-1">
+                    <input class="btn btn-default btn-md" role="button" type="submit">
+                </div>
+                <div class="col-md-3" > &nbsp</div>
+            </div>
+            <div class='row'> &nbsp</div>
+            <div class='row'>
+                <div>
+                    <em><label for="multiple-label-example">Search by attributes</label></em>
+                    <select data-placeholder="Choose attributes" class="chosen-select" multiple style="width:350px;" tabindex="4" id="multiple-label-example" name="attributes">
+                        <option value=""></option>
+                            {% for a in allAttr %}
+                                <option value="{{a}}" name = "{{ a }}" type="checkbox">{{a}}</option>
+                                <a href="?attributes=&{{ a }}"></a>
+                            {% endfor %}
+                    </select>
+                    <input class="btn btn-default btn-md" role="button" type="submit">
+                </div>
+            </div>
+      
+        
+            <div class='row'>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default">Sort by</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>{% with "name" as by %}<input class='btn btn-default' type="submit" name="by" value="{{ by }}" role="button" readonly>
+                        {%endwith%}</li>
+                        <li>{% with "capacity" as by %}<input class='btn btn-default' type="submit" name="by" value="{{ by }}" role="button" readonly>{%endwith%}</li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+
+        <div class="container">
+
+            <div class='row'> &nbsp</div>
+            <div class="row"> Vacant rooms: </div>        
+            <div class='row'> &nbsp</div>
+            <div class="row"> 
+                <div class='col-md-3' type = 'hidden'> &nbsp </div>
+                <div class='col-md-2'> Name </div>
+                <div class='col-md-2'> Catacity </div>
+                <div class='col-md-2'> Description </div>
+            </div>
+            {% for room in rooms_list %}
+            <div class="row">
+               <!--a href="{{ room.id }}/freedates"> -->
+                <div class='col-md-3'>  </div>
+                <div class='col-md-2'>{{ room }}</div> 
+                <div class='col-md-2'>{{ room.capacity }}</div>
+                <div class='col-md-2'>{{ room.description }} </div>
+                    <!-- Button trigger modal -->
+                <div class="container">
+                    <div class="starter-template">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick='klick("{{ room.id }}")'>
+                            rezerwuj
+                        </button> 
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                Sorry, there are no rooms available.
+            {% endfor %}
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Wolne terminy</h4>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <!--button type="button" class="btn btn-default" value="Book" name="book" onclick="bookMe()">Book</button>
+                    <!--button type="button" class="btn btn-primary">Save changes</button-->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if rooms_list.has_previous %}
+                        <ul class="pager">
+                            <li><a href="?page={{ contacts.previous_page_number }}&by={{ by }}&zapytanie={{ zapytanie }}&placeMin={{ placeMin }}&placeMax={{ placeMax }}{% for a in attributes %}&attributes={{ a }}{%endfor%}">previous</a></li>
+                        </ul>
+                        {% endif %}
+
+                       <div class="btn-group">
+                            <button type="text" class="btn btn-default" disabled>
+                                <span class="current">
+                                    Page {{ rooms_list.number }} of {{ rooms_list.paginator.num_pages }}.
+                                </span>
+                            </button>
+                        </div>
+
+                        {% if rooms_list.has_next %}
+                        <ul class="pager">
+                            <li><a href="?page={{ rooms_list.next_page_number }}&by={{ by }}&zapytanie={{ zapytanie }}&placeMin={{ placeMin }}&placeMax={{ placeMax }}{% for a in attributes %}&attributes={{ a }}{%endfor%}">next</a></li>
+                        </ul>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div><!-- /.container -->
+
+
+
+
+  {% endblock %}
+  
+

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% extends 'mysite/main.html' %}
+<html>
+<head><title>{% block title %}Reservation</title>{% endblock%}</head>
+<body>
+{% block page %}
+	<!-- Bootstrap core CSS -->
+    <link href="../../../../../../../static/mysite/bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../../../../../../../static/mysite/starter-template.css" rel="stylesheet">
+<div class="container">
+
+      <div class="starter-template">
+        <h1>Your reservation</h1>
+        <p class="lead"> Fill in the blanks. </br> Remember to log in first. </p>
+		<div class="well">
+		<p><form action= 'done' method="POST"> 
+            {% csrf_token %} 	   
+		<div class='row'>
+			<div class='col-md-2'> &nbsp
+				{% with hours_list.0.From as mini%}
+				<input type='hidden' class=" form-control bfh-number" name='mini' value= "{{mini}}" >
+				{%endwith%} 
+				{% with hours_list.0.to as maxi%}
+				<input type='hidden' name='maxi' value= "{{maxi}}" >
+				{%endwith%}
+			</div>
+			<div class='col-md-2'>
+				<div class="panel panel-default">
+					<div class="panel-heading">Room number</div>
+	  				<div class="panel-body">
+	  					{% with hours_list.0.room as roomid %}
+	    				<input class='form-control' name='roomid' value="{{ roomid }}" readonly> 
+	    				{% endwith %}
+	  				</div>
+				</div>
+			</div>
+			<div class='col-md-2'>
+				<div class="panel panel-default">
+					<div class="panel-heading">Your chosen date</div>
+	  				<div class="panel-body">
+	  					{% with hours_list.0 as date %}
+	    				<input class='form-control' name='date' value="{{ date }}" readonly>
+	    				{% endwith %}
+	  				</div>
+				</div>
+			</div>
+			<div class='col-md-2'>
+				<div class="panel panel-default">
+					<div class="panel-heading">Starting hour ({{ hours_list.0.From}}) </div>
+	  				<div class="panel-body">
+	    				<input type="text" class="form-control bfh-number" name='From' value="{{ From }}" >
+	  				</div>
+				</div>
+			</div>	
+			<div class='col-md-2'>
+				<div class="panel panel-default">
+					<div class="panel-heading">Ending hour ({{ hours_list.0.to}})</div>
+	  				<div class="panel-body">
+	    				<input type="text" class="form-control bfh-number" name='to' value=" {{ to }}">
+	  				</div>
+				</div>
+			</div>	
+		</div>		
+		{% if user.is_authenticated %}
+		<input class="btn btn-default btn-lg" role="button" type="submit" value="Submit">
+		{% endif %}
+	</p></form> 
+		
+      </div>
+</div>
+</div>
+    <script src="../../../../../../../static/mysite/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+{% endblock%}
+</body>
+</html>

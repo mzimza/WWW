@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% extends 'mysite/main.html' %}
+<html>
+<head><title>{% block title %}Free dates</title>{% endblock%}</head>
+<body>
+	{% block page %}
+<!-- Bootstrap core CSS -->
+    <link href="../../static/mysite/bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../../static/mysite/starter-template.css" rel="stylesheet">
+<div class="container">
+
+      <div class="starter-template">
+        <h1>Free dates</h1>
+        <p class="lead">You are looking at free dates for room: {{free_list.0.room}}.
+
+{% regroup free_list by display_name as dates_list %}
+
+{% for date in dates_list %}
+	<li>{{ date.grouper }}
+	{% for item in date.list%}
+		<ul><a href="{{ item.date.year }}/{{ item.date.month }}/{{ item.date.day }}/{{ item.From }}/{{ item.to}}/reservation">Od: {{ item.From }} Do: {{ item.to}}</a></ul>
+		{% endfor %}
+	</li>
+	{% empty %}
+    <li>Sorry, no hours available.</li>
+{% endfor %}
+</p>
+</div>
+</div>
+<script src="../../static/mysite/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+{% endblock %}
+</body>
+</html>

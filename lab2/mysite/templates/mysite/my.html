@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html manifest="manifest">
+
+<head>
+  <!--meta charset="utf-8">
+  <title>jQuery UI Selectable - Default functionality</title>
+  <link rel="stylesheet" href="../static/mysite/jquery-ui-1.10.4/development-bundle/themes/base/jquery.ui.all.css">
+  <script src="../static/mysite/jquery-ui-1.10.4/development-bundle/jquery-1.10.2.js"></script>
+  <script src="../static/mysite/jquery-ui-1.10.4/development-bundle/ui/jquery.ui.core.js"></script>
+  <script src="../static/mysite/jquery-ui-1.10.4/development-bundle/ui/jquery.ui.widget.js"></script>
+  <script src="../static/mysite/jquery-ui-1.10.4/development-bundle/ui/jquery.ui.mouse.js"></script>
+  <script src="../static/mysite/jquery-ui-1.10.4/development-bundle/ui/jquery.ui.selectable.js"></script>
+  <link href="../static/mysite/starter-template.css" rel="stylesheet">
+
+  <style>
+  #selectable .ui-selecting { background: #FECA40; }
+  #selectable .ui-selected { background: #F39814; color: white; }
+  #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 40px; }
+  </style>
+  <script>
+ /* $(function() {
+    $( "#selectable" ).selectable({
+       stop: function() {
+          var result = $( "#select-result" ).empty();
+          selectednumbers2 = [];
+          $( ".ui-selected", this ).each(function(i) {
+            var index = $( "#selectable li" ).index(this);
+            result.append( " " + $(this).attr('id'));
+            selectednumbers2[i] = $(this).attr('id');
+          });
+        }
+    });
+  });
+*/
+</script-->
+<script>
+function bookMe(room, date) {
+        console.log(csrftoken);
+        console.log("działa", room, date);
+        if( $('#multiple-label :checked').length > 0){
+          //build an array of selected values
+          var selectednumbers = [];
+          $('#multiple-label :checked').each(function(i, selected) {
+              selectednumbers[i] = $(selected).val();
+          });
+          console.log("wybrane, ", JSON.stringify(selectednumbers));
+        }
+        //console.log($('#selectable li ').attr('id'));
+        //console.log("wybrane, ", JSON.stringify(selectednumbers2));
+        var jqxhr = $.ajax( "newReservation", {type:"POST", 
+            data: {'room_id' : room, 'hours': JSON.stringify(selectednumbers) , 'date' : date }})
+        .done(function(data) {
+            console.log( "success" );
+            $("#result").html(data);
+            })
+        .fail(function() {
+            console.log( "error" );
+            })
+        .always(function() {
+            console.log( "complete" );
+            });
+}
+</script>
+</head>
+<body>
+
+<div class="modal-body">
+  {% regroup wolne by date as dates_list %}
+  <div id="result"> </div>
+  <div class="panel-group" id="accordion">
+
+  {% for date in dates_list %}
+   
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{{ date.list.0.display_name }}">
+            {{ date.grouper }} (godz. {% for item in hours%} 
+            {% if item.display_name == date.list.0.display_name %}
+            {{ item.From }} - {{ item.to }} 
+            {% endif %}
+             {% endfor %} ) 
+          </a>        
+        </h4>
+      </div>
+      <div id="{{ date.list.0.display_name }}" class="panel-collapse collapse">
+        <div class="panel-body">
+          <div>
+              <select data-placeholder="Choose hours" class="chosen-select" multiple style="width:350px;" tabindex="16" id="multiple-label" name="multiple-label">
+                {% for h in date.list.0.showHours %}
+                <option value="{{ h }}" name = "{{ h }}" type="checkbox">{{ h }}</option>
+                {% endfor %}
+              </select>
+          </div>
+          <!--div>
+            <p id="feedback">
+              <span>You've selected:</span> <span id="select-result">none</span>.
+            </p>
+            <ol id="selectable">
+              {% for h in date.list.0.showHours %}
+               <li class="ui-widget-content" value="{{ h }}" name = "{{ h }}" id="{{ h }}" type="checkbox">{{ h }}</li>
+              {% endfor %}
+            </ol>
+          </div-->
+          <button class='btn' value="Book" name="book" onclick="bookMe('{{ room }}', '{{ date.list.0 }}')">Book</button>
+        </div>
+      </div>
+    </div>
+     {% empty %}
+      <div class="alert alert-warning">
+        <strong> Sorry, no hours available.</strong> 
+      </div>
+  {% endfor %}
+  </div>
+</div>
+</body>
+</html>

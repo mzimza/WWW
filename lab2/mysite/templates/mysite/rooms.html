@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+{% block title %}Wolne pokoje</title>{% endblock%}
+{% block content %}
+<ul>
+{% for room in room_list %}
+	<li><a href="{{ room.id }}/freedates">{{ room }}</a></li>
+	{% empty %}
+    <li>Przepraszamy, nie ma dostępnych pokoji.</li>
+{% endfor %}	
+</ul>
+{% endblock %}
+</html>

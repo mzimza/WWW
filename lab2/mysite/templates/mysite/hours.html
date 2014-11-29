@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+{%block title %}Wolne godziny dla 
+pokój nr: {{hours_list_from.0.room}}, data: {{hours_list_from.0.date}} {% endblock%}
+
+
+{% block content %}
+<ul>
+{% for hour in hours_list_from %}
+	<li>Od godziny {{ hour.From }} do godziny {{ hour.to }}</li>
+	{% empty %}
+    <li>Przepraszamy, nie ma dostępnych terminów.</li>
+{% endfor %}
+</ul>
+{% endblock %}
+
+</html>

@@ -1,0 +1,21 @@
+CACHE MANIFEST
+#verion 101
+/static/mysite/offline.js
+/static/mysite/classes.js
+/static/mysite/jquery-1.11.0.min.js
+/static/mysite/starter-template.css
+/static/mysite/zaS.png
+/static/mysite/bootstrap-3.1.1-dist/js/bootstrap.min.js
+/static/mysite/bootstrap-3.1.1-dist/css/bootstrap.min.css
+/static/mysite/bootstrap-3.1.1-dist/css/bootstrap.css
+/static/mysite/chosen_v1.1.0/chosen.css
+/static/mysite/chosen_v1.1.0/chosen.jquery.js
+/static/mysite/chosen_v1.1.0/chosen.proto.js
+/static/mysite/chosen_v1.1.0/docsupport/prism.js
+/static/mysite/bootstrap-3.1.1-dist/fonts/glyphicons-halflings-regular.eot
+/static/mysite/bootstrap-3.1.1-dist/fonts/glyphicons-halflings-regular.svg
+/static/mysite/bootstrap-3.1.1-dist/fonts/glyphicons-halflings-regular.ttf
+/static/mysite/bootstrap-3.1.1-dist/fonts/glyphicons-halflings-regular.woff
+
+NETWORK:
+*

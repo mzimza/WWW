@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html manifest="manifest" type="text/cache-manifest">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Maja">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+
+    <title>{% block title %}Starter Template for Bootstrap{% endblock %}</title>
+    {% load staticfiles %}
+    <!-- Bootstrap core CSS -->
+    <link href="../static/mysite/bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/mysite/chosen_v1.1.0/chosen.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="../static/mysite/starter-template.css" rel="stylesheet">
+    <script src="../static/mysite/jquery-1.11.0.min.js" type="text/javascript"></script>
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Reserve a room</a>
+        </div>
+        <div class="collapse navbar-collapse">      
+            <!--div class="row">
+                <div class="col-md-8"-->
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="/mysite/search">Home</a></li> <!-- było po li class="active"-->
+                        <li><a href="#about"></a></li>
+                        <li><a href="#contact"></a></li>
+                        <li class="divider"></li>  
+                    </ul> 
+                     <ul class="nav navbar-nav navbar-right"> 
+                        {% if messages %}
+                            {% for message in messages %}
+                                <li><div class="alert alert-info">
+                                    <strong>{{ message }}</strong> 
+                                </div></li>
+                            {% endfor %}
+                        {% endif %}
+                        <li class="divider"></li>
+                        {% if user.is_authenticated %}
+                        <li><p><div class='form-control' type='text'>{{ user.username }} </div></li> <li> <a href="logout" class="btn btn-default btn-lg" role="button">wyloguj</a></p></li>
+                        {% else %}
+                        <li><p><form action= 'login' method="POST"> </li>
+                        {% csrf_token %} 
+                        <li><input class='form-control' type="text" name="username"></li>
+                        <li><input class='form-control' type="password" name="password"></li>
+                        <li><input class="btn btn-default btn-lg" role="button" type="submit" value="Zaloguj"></li>
+                        </p></form></li>
+                        {% endif %}
+                    </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    
+    {% block page %}
+
+
+<div class="container">
+
+      <div class="starter-template">
+        <h1>Search engine</h1>
+        <p class="lead">Write your search-phrase here.</p>
+        
+        <form action='search' method="get">
+            <input class='form-control' type="text" name="zapytanie" value="{{zapytanie}}">
+            <input class="btn btn-default btn-lg" role="button" type="submit">
+
+            <div class='row'> &nbsp</div>
+            <div class = "row">
+              Liczba miejsc:
+            </div>
+            <div class="row">
+                <div class="col-md-4"> &nbsp</div>
+                <div class="col-md-1"> od </div>
+                <div class="col-md-1"><input class='form-control' type="text" name="placeMin" value="{{placeMin}}" width="20"></div>
+                <div class="col-md-1"> do </div>
+                <div class="col-md-1">
+                    <input class='form-control' type="text" name="placeMax" value="{{placeMax}}">
+                </div>
+                <div class="col-md-1">
+                    <input class="btn btn-default btn-md" role="button" type="submit">
+                </div>
+                <div class="col-md-3" > &nbsp</div>
+            </div>
+            <div class='row'> &nbsp</div>
+            <div class='row'>
+                <div>
+                    <em><label for="multiple-label-example">Search by attributes</label></em>
+                    <select data-placeholder="Choose attributes" class="chosen-select" multiple style="width:350px;" tabindex="4" id="multiple-label-example" name="attributes">
+                        <option value=""></option>
+                            {% for a in allAttr %}
+                                <option value="{{a}}" name = "{{ a }}" type="checkbox">{{a}}</option>
+                                <a href="?attributes=&{{ a }}"></a>
+                            {% endfor %}
+                    </select>
+                    <input class="btn btn-default btn-md" role="button" type="submit">
+                </div>
+            </div>
+      
+        
+            <div class='row'>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default">Sort by</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>{% with "name" as by %}<input class='btn btn-default' type="submit" name="by" value="{{ by }}" role="button" readonly>
+                        {%endwith%}</li>
+                        <li>{% with "capacity" as by %}<input class='btn btn-default' type="submit" name="by" value="{{ by }}" role="button" readonly>{%endwith%}</li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+
+        <div class="container">
+
+            <div class='row'> &nbsp</div>
+            <div class="row"> Vacant rooms: </div>        
+            <div class='row'> &nbsp</div>
+            <div class="row"> 
+                <div class='col-md-3' type = 'hidden'> &nbsp </div>
+                <div class='col-md-2'> Name </div>
+                <div class='col-md-2'> Catacity </div>
+                <div class='col-md-2'> Description </div>
+            </div>
+            {% for room in rooms_list %}
+            <div class="row">
+               <!--a href="{{ room.id }}/freedates"> -->
+                <div class='col-md-3'>  </div>
+                <div class='col-md-2'>{{ room }}</div> 
+                <div class='col-md-2'>{{ room.capacity }}</div>
+                <div class='col-md-2'>{{ room.description }} </div>
+                    <!-- Button trigger modal -->
+                <div class="container">
+                    <div class="starter-template">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal" onclick='klick("{{ room.id }}")'>
+                            rezerwuj
+                        </button> 
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                Sorry, there are no rooms available.
+            {% endfor %}
+
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Wolne terminy</h4>
+                  </div>
+                  <div class="modal-body">
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <!--button type="button" class="btn btn-primary">Save changes</button-->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if rooms_list.has_previous %}
+                        <ul class="pager">
+                            <li><a href="?page={{ contacts.previous_page_number }}&by={{ by }}&zapytanie={{ zapytanie }}&placeMin={{ placeMin }}&placeMax={{ placeMax }}{% for a in attributes %}&attributes={{ a }} {%endfor%}">previous</a></li>
+                        </ul>
+                        {% endif %}
+
+                       <div class="btn-group">
+                            <button type="text" class="btn btn-default" disabled>
+                                <span class="current">
+                                    Page {{ rooms_list.number }} of {{ rooms_list.paginator.num_pages }}.
+                                </span>
+                            </button>
+                        </div>
+
+                        {% if rooms_list.has_next %}
+                        <ul class="pager">
+                            <li><a href="?page={{ rooms_list.next_page_number }}&by={{ by }}&zapytanie={{ zapytanie }}&placeMin={{ placeMin }}&placeMax={{ placeMax }}{% for a in attributes %}&attributes={{ attributes }}{%endfor%}">next</a></li>
+                        </ul>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div><!-- /.container -->
+
+
+
+
+<!--
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>Click "Home" to go to the search engine.</h1>
+        <p class="lead">Cats are nice :)</p>
+        <img src="../static/mysite/zaS.png" class="img-thumbnail" alt="tu bedzie koteł" id="kot">
+      </div>
+
+
+
+
+
+ 
+ <div class="container">
+      <div class="starter-template">
+          <h1>Przykład wczytywania ajaxem</h1>
+            {% for p in pokoj%}
+          <button id="{{ p }}" name="{{ p.id }}" data-toggle="modal" data-target="#myModal" value="{{ p.id }}" onclick="klick({{p.id}})"> {{ p }}</button>
+        {% endfor %}
+      </div>
+  </div>
+
+
+
+
+    </div>/.container -->
+    {% endblock %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+   <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" type="text/javascript"></script> -->
+    <script src="../static/mysite/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+    <!--  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" ></script> -->
+  <script src="../static/mysite/chosen_v1.1.0/chosen.jquery.js" type="text/javascript"></script>
+  <script src="../static/mysite/chosen_v1.1.0/docsupport/prism.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    var config = {
+      '.chosen-select'           : {},
+      '.chosen-select-deselect'  : {allow_single_deselect:true},
+      '.chosen-select-no-single' : {disable_search_threshold:10},
+      '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+      '.chosen-select-width'     : {width:"95%"}
+    }
+    for (var selector in config) {
+      $(selector).chosen(config[selector]);
+    }
+  </script>
+   <script>
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function sameOrigin(url) {
+    // test that a given url is a same-origin URL
+    // url could be relative or scheme relative or absolute
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    // Allow absolute or scheme relative URLs to same origin
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        // or any other URL that isn't scheme relative or absolute i.e relative.
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+            // Send the token to same-origin, relative URLs only.
+            // Send the token only if the method warrants CSRF protection
+            // Using the CSRFToken value acquired earlier
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function klick(id) {
+        console.log(csrftoken);
+        console.log(id);
+        var jqxhr = $.ajax( "formularz", {type:"POST", 
+            data: {'room_id': id } } )
+        .done(function(data) {
+            console.log( "success" );
+            $(".modal-body").html(data);
+            })
+        .fail(function() {
+            console.log( "error" );
+            })
+        .always(function() {
+            console.log( "complete" );
+            });
+}
+
+    </script>
+
+
+  </body>
